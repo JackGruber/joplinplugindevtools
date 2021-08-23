@@ -1,3 +1,4 @@
+// @ts-ignore
 import { SettingSection, SettingItem } from "api/types";
 
 export default {
