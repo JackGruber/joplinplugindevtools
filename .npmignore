@@ -1,0 +1,10 @@
+*.md
+!README.md
+/*.jpl
+/api
+tsconfig.json
+webpack.config.js
+tslint.json
+/src
+dist/api/*
+tools/*

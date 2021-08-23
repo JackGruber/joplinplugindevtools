@@ -1,0 +1,16 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "es2015",
+		"jsx": "react",
+		"allowJs": true,
+		"outDir": "./dist",
+		"declaration": true,
+		"declarationMap": true,
+		"inlineSourceMap": true,
+		"inlineSources": true,
+		"types": [],
+		"skipLibCheck": true
+	},
+	"exclude": ["node_modules/", "api/", "tools/"]
+}
