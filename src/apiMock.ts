@@ -1,5 +1,5 @@
 // @ts-ignore
-import { SettingSection, SettingItem } from "api/types";
+import { SettingSection, SettingItem, Path } from "api/types";
 
 export default {
   settings: {
@@ -23,6 +23,30 @@ export default {
       return "";
     },
     dataDir: async (): Promise<string> => {
+      return "";
+    },
+  },
+  data: {
+    get: async (path: Path, query?: any): Promise<any> => {
+      return "";
+    },
+    post: async (
+      path: Path,
+      query?: any,
+      body?: any,
+      files?: any[]
+    ): Promise<any> => {
+      return "";
+    },
+    put: async (
+      path: Path,
+      query?: any,
+      body?: any,
+      files?: any[]
+    ): Promise<any> => {
+      return "";
+    },
+    delete: async (path: Path, query?: any): Promise<any> => {
       return "";
     },
   },
