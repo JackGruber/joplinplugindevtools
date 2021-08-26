@@ -50,4 +50,9 @@ export default {
       return "";
     },
   },
+  workspace: {
+    selectedNote: async (): Promise<any> => {
+      return "";
+    },
+  },
 };
