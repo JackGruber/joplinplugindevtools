@@ -17,15 +17,13 @@ import {
 } from "./github";
 import * as dotenv from "dotenv";
 import { execCommand } from "./execCommand";
+import { manifestFile, publishDir } from "./settings";
 
 async function createRelease(preRelease: boolean) {
   console.log(`Create GitHub ${preRelease ? "pre-" : ""}release`);
 
   const info = await getInfo();
 
-  const manifestFile = path.resolve(
-    path.join(__dirname, "../src/manifest.json")
-  );
   const manifest = require(manifestFile);
 
   const log = await getChangelog(manifest.version);
@@ -48,7 +46,7 @@ async function createRelease(preRelease: boolean) {
 
   const releaseAssetOptions: AssetOptions = {
     token: process.env.GITHUB_TOKEN,
-    asset: path.resolve(path.join(__dirname, "..", "publish", jpl)),
+    asset: path.resolve(path.join(publishDir, jpl)),
     name: jpl,
     label: jpl,
     uploadUrl: releaseResult.upload_url,
@@ -100,9 +98,7 @@ async function main() {
   }
   console.log("Create release");
   await runNpmVersion(type);
-  const versionNumber = require(path.resolve(
-    path.join(__dirname, "../package.json")
-  )).version;
+  const versionNumber = require(manifestFile).version;
   const version = `v${versionNumber}`;
   console.log("new version " + version);
   await setPluginVersion(versionNumber);

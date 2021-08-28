@@ -1,14 +1,7 @@
 import * as fs from "fs-extra";
 import * as moment from "moment";
-import * as path from "path";
 import { execCommand } from "./execCommand";
-
-const changelogFile = path.resolve(
-  path.join(__dirname, "..", "..", "..", "CHANGELOG.md")
-);
-const manifestFile = path.resolve(
-  path.join(__dirname, "..", "..", "..", "src", "manifest.json")
-);
+import { changeLogFile, manifestFile } from "./settings";
 
 export function readline(question: string) {
   return new Promise((resolve) => {
@@ -32,12 +25,12 @@ export async function getJPLFileName() {
 }
 
 export async function updateChangelog(version: string, preRelease: boolean) {
-  let data = fs.readFileSync(changelogFile, { encoding: "utf8", flag: "r" });
+  let data = fs.readFileSync(changeLogFile, { encoding: "utf8", flag: "r" });
   version = `${version} ${preRelease ? "[pre-release] " : ""}(${moment().format(
     "YYYY-MM-DD"
   )})`;
   data = data.replace(/## not released/, `## not released\n\n## v${version}`);
-  fs.writeFileSync(changelogFile, data);
+  fs.writeFileSync(changeLogFile, data);
 }
 
 export async function setPluginVersion(version: string) {
@@ -56,7 +49,7 @@ export async function runNpmVersion(type: string) {
 }
 
 export async function getChangelog(version: string): Promise<string> {
-  let data = fs.readFileSync(changelogFile, { encoding: "utf8", flag: "r" });
+  let data = fs.readFileSync(changeLogFile, { encoding: "utf8", flag: "r" });
 
   version = version.replace(/\./g, "\\.");
   const regExp = new RegExp(`(?<ENTRY>## v${version}(.|\n)*?)^##`, "im");
