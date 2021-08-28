@@ -17,7 +17,7 @@ import {
 } from "./github";
 import * as dotenv from "dotenv";
 import { execCommand } from "./execCommand";
-import { manifestFile, publishDir } from "./settings";
+import { manifestFile, packageFile, publishDir } from "./settings";
 
 async function createRelease(preRelease: boolean) {
   console.log(`Create GitHub ${preRelease ? "pre-" : ""}release`);
@@ -98,7 +98,7 @@ async function main() {
   }
   console.log("Create release");
   await runNpmVersion(type);
-  const versionNumber = require(manifestFile).version;
+  const versionNumber = require(packageFile).version;
   const version = `v${versionNumber}`;
   console.log("new version " + version);
   await setPluginVersion(versionNumber);
