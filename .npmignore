@@ -9,3 +9,4 @@ tslint.json
 dist/api/*
 tools/*
 .env
+.prettierrc.json
