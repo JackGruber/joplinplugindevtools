@@ -3,3 +3,4 @@ tools/*.js
 dist/
 node_modules/
 publish/
+.env
