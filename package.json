@@ -1,6 +1,6 @@
 {
   "name": "joplinplugindevtools",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Tools for Joplin plugin develop.",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
@@ -24,6 +24,7 @@
     "mime": "^2.5.2",
     "moment": "^2.29.1",
     "path": "^0.12.7",
-    "process": "^0.11.10"
+    "process": "^0.11.10",
+    "strip-bom-stream": "^4.0.0"
   }
 }

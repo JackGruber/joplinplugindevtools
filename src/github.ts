@@ -4,6 +4,7 @@ import axios from "axios";
 import * as FormData from "form-data";
 import * as fs from "fs-extra";
 import * as mime from "mime";
+import * as stripBomStream from "strip-bom-stream";
 
 const apiRoot = "https://api.github.com";
 
@@ -70,13 +71,19 @@ export async function githubRelease(options: ReleaseOptions): Promise<any> {
 export async function githubAsset(info: AssetOptions): Promise<any> {
   const cleanUrl = info.uploadUrl.replace("{?name,label}", "");
   const form = new FormData();
-  form.append("file", fs.createReadStream(info.asset));
+  form.append("file", fs.createReadStream(info.asset).pipe(stripBomStream()));
+  //form.append("file", fs.readFileSync(info.asset));
+
+  const formHeaders = form.getHeaders();
+
   const state = fs.statSync(info.asset);
   const headers = {
     Authorization: `token ${info.token}`,
-    "Content-Type": mime.getType(info.asset),
+    //"Content-Type": mime.getType(info.asset),
+    "Content-Type": "multipart/form-data",
     "Content-Length": state.size,
     accept: `application/vnd.github.v3+json`,
+    ...formHeaders,
   };
 
   const response = await axios.post(
