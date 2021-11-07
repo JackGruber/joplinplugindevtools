@@ -51,7 +51,7 @@ async function createRelease(preRelease: boolean) {
     label: jpl,
     owner: info.owner,
     repo: info.repo,
-    release_id: releaseResult.data.release_id,
+    release_id: releaseResult.id,
   };
 
   console.log("githubAsset");
