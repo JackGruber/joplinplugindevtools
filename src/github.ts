@@ -1,19 +1,16 @@
 // https://docs.github.com/en/rest/reference/repos
 
-import axios from "axios";
-import * as FormData from "form-data";
 import * as fs from "fs-extra";
-import * as mime from "mime";
-import * as stripBomStream from "strip-bom-stream";
-
-const apiRoot = "https://api.github.com";
+import { Octokit } from "@octokit/rest";
 
 export interface AssetOptions {
-  asset: string;
+  file: string;
   token: string;
-  uploadUrl: string;
   label: string;
   name: string;
+  owner: string;
+  repo: string;
+  release_id: number;
 }
 
 export interface ReleaseOptions {
@@ -33,15 +30,10 @@ export interface ReproOptions {
 }
 
 export async function checkAuth(options: ReproOptions): Promise<boolean> {
-  const url = `${apiRoot}/repos/${options.owner}/${options.repo}/releases`;
-  const headers = {
-    Authorization: `token ${options.token}`,
-    accept: `application/vnd.github.v3+json`,
-  };
+  const octokit = new Octokit({ auth: options.token });
+  const response = await octokit.rest.users.getAuthenticated();
 
-  const response = await axios.get(url, { headers });
-
-  if (response.status === 200 && response.statusText === "OK") {
+  if (response.status === 200) {
     return true;
   } else {
     return false;
@@ -49,18 +41,16 @@ export async function checkAuth(options: ReproOptions): Promise<boolean> {
 }
 
 export async function githubRelease(options: ReleaseOptions): Promise<any> {
-  const url = `${apiRoot}/repos/${options.owner}/${options.repo}/releases`;
-  const body = {
+  const octokit = new Octokit({ auth: options.token });
+  const response = await octokit.rest.repos.createRelease({
+    owner: options.owner,
+    repo: options.repo,
     tag_name: options.tag,
-    name: options.name,
     body: options.body,
     prerelease: options.prerelease,
-  };
-  const headers = {
-    Authorization: `token ${options.token}`,
-    accept: `application/vnd.github.v3+json`,
-  };
-  const response = await axios.post(url, body, { headers });
+    name: options.name,
+  });
+
   if (response.status !== 201) {
     console.error(response);
     throw new Error("github release error");
@@ -68,36 +58,19 @@ export async function githubRelease(options: ReleaseOptions): Promise<any> {
   return response.data;
 }
 
-export async function githubAsset(info: AssetOptions): Promise<any> {
-  const cleanUrl = info.uploadUrl.replace("{?name,label}", "");
-  const form = new FormData();
-  form.append("file", fs.createReadStream(info.asset).pipe(stripBomStream()));
-  //form.append("file", fs.readFileSync(info.asset));
+export async function githubAsset(asset: AssetOptions): Promise<any> {
+  const octokit = new Octokit({ auth: asset.token });
 
-  const formHeaders = form.getHeaders();
+  const response = await octokit.rest.repos.uploadReleaseAsset({
+    owner: asset.owner,
+    repo: asset.repo,
+    release_id: asset.release_id,
+    name: asset.name,
+    label: asset.label,
+    data: fs.readFileSync(asset.file),
+  });
 
-  const state = fs.statSync(info.asset);
-  const headers = {
-    Authorization: `token ${info.token}`,
-    //"Content-Type": mime.getType(info.asset),
-    "Content-Type": "multipart/form-data",
-    "Content-Length": state.size,
-    accept: `application/vnd.github.v3+json`,
-    ...formHeaders,
-  };
-
-  const response = await axios.post(
-    `${cleanUrl}?label=${info.label}&name=${info.name}`,
-    form,
-    { headers }
-  );
-
-  if (response.status !== 201) {
-    console.error(response);
-    throw new Error("github asset upload error");
-  }
-
-  if (response.data.state !== "uploaded") {
+  if (response.status !== 201 && response.data.state !== "uploaded") {
     console.error(response);
     throw new Error("github asset upload error");
   }

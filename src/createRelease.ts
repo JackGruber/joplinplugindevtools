@@ -46,10 +46,12 @@ async function createRelease(preRelease: boolean) {
 
   const releaseAssetOptions: AssetOptions = {
     token: process.env.GITHUB_TOKEN,
-    asset: path.resolve(path.join(publishDir, jpl)),
+    file: path.resolve(path.join(publishDir, jpl)),
     name: jpl,
     label: jpl,
-    uploadUrl: releaseResult.upload_url,
+    owner: info.owner,
+    repo: info.repo,
+    release_id: releaseResult.data.release_id,
   };
 
   console.log("githubAsset");

@@ -16,6 +16,7 @@
     "typescript": "^3.9.10"
   },
   "dependencies": {
+    "@octokit/rest": "^18.12.0",
     "axios": "^0.21.1",
     "dotenv": "^10.0.0",
     "execa": "^5.1.1",
