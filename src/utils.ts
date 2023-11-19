@@ -52,8 +52,12 @@ export async function getChangelog(version: string): Promise<string> {
   let data = fs.readFileSync(changeLogFile, { encoding: "utf8", flag: "r" });
 
   version = version.replace(/\./g, "\\.");
-  const regExp = new RegExp(`(?<ENTRY>## v${version}(.|\n)*?)^##`, "im");
+  const regExp = new RegExp(`(?<ENTRY>## v${version}.*?)^##`, "ims");
   const match = data.match(regExp);
+  if (match == null) {
+    throw new Error("Changelog was not found");
+  }
+
   let change = match.groups.ENTRY.split("\n");
   change.splice(0, 2);
   return change.join("\n");
