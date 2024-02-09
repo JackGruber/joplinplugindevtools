@@ -55,4 +55,9 @@ export default {
       return "";
     },
   },
+  commands: {
+    execute: async (commandName: string, ...args: any[]): Promise<any> => {
+      return "";
+    },
+  },
 };
